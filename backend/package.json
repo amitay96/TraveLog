@@ -1,0 +1,32 @@
+{
+  "name": "around-express",
+  "version": "1.0.0",
+  "description": "`/data` — JSON files to temporarily emulate database integration.",
+  "main": "app.js",
+  "scripts": {
+    "lint": "npx eslint .",
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amitay96/around-express.git"
+  },
+  "author": "Amitay Kaganovich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amitay96/around-express/issues"
+  },
+  "homepage": "https://github.com/amitay96/around-express#readme",
+  "devDependencies": {
+    "eslint": "^8.22.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongoose": "^6.6.1",
+    "validator": "^13.7.0"
+  }
+}
