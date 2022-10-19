@@ -35,7 +35,7 @@ function App() {
 
   const [currentUser, setCurrentUser] = useState({});
   const [userData, setUserData] = useState({
-    email: "email@mail.com",
+    email: "",
   });
 
   
@@ -75,9 +75,9 @@ function App() {
       auth
         .checkToken(token)
         .then((res) => {
-          if (res.data._id) {
+          if (res._id) {
             setLoggedIn(true);
-            setUserData({ email: res.data.email });
+            setUserData({ email: res.email });
             history.push("/");
           }
         })

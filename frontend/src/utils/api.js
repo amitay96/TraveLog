@@ -1,7 +1,6 @@
 class Api {
-  constructor({ baseUrl, headers }) {
+  constructor({ baseUrl }) {
     this._baseUrl = baseUrl;
-    this._headers = headers;
   }
 
   _checkResponse(res) {
@@ -13,21 +12,30 @@ class Api {
     return fetch(url, headers).then(this._checkResponse);
   }
 
-  getInitialCards() {
+  getInitialCards(token) {
     return this._request(`${this._baseUrl}/cards`, {
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 
-  getUserInfo() {
+  getUserInfo(token) {
     return this._request(`${this._baseUrl}/users/me`, {
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 
-  setUserInfo({ name, about }) {
+  setUserInfo({ name, about }, token) {
     return this._request(`${this._baseUrl}/users/me`, {
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       method: "PATCH",
       body: JSON.stringify({
         name: name,
@@ -36,9 +44,12 @@ class Api {
     });
   }
 
-  setUserAvatar(avatar) {
+  setUserAvatar(avatar, token) {
     return this._request(`${this._baseUrl}/users/me/avatar`, {
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       method: "PATCH",
       body: JSON.stringify({
         avatar: avatar,
@@ -46,37 +57,42 @@ class Api {
     });
   }
 
-  createCard(data) {
+  createCard(data, token) {
     return this._request(`${this._baseUrl}/cards`, {
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       method: "POST",
       body: JSON.stringify(data),
     });
   }
 
-  deleteCard(cardId) {
+  deleteCard(cardId, token) {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       method: "DELETE",
     });
   }
 
-  toggleLike(cardId, isLiked) {
+  toggleLike(cardId, isLiked, token) {
     let method;
     isLiked ? (method = "DELETE") : (method = "PUT");
     return this._request(`${this._baseUrl}/cards/likes/${cardId}`, {
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       method: method,
     });
   }
 }
 
 const api = new Api({
-  baseUrl: "https://around.nomoreparties.co/v1/cohort-3-en",
-  headers: {
-    authorization: "a987f557-c5fc-4df9-a055-4063817e4bf0",
-    "Content-Type": "application/json",
-  },
+  baseUrl: "http://localhost:3000",
 });
 
 export default api;

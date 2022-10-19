@@ -46,12 +46,12 @@ const getUser = (req, res) => {
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
   User.findOne({ email })
     .then(user => {
       if (user) {
-        throw new customError(res, 409, 'Email already exists');
+        throw customError(res, 409, 'Email already exists');
       }
       return bcrypt.hash(password, 10);
     })
@@ -59,18 +59,14 @@ const createUser = (req, res) => {
     .then(user => res.status(201).send({ data: user }))
     .catch(err => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
-          message: `${Object.values(err.errors)
-            .map((error) => error.message)
-            .join(', ')}`,
-        });
+        next(customError(res, 400, 'Email already exists'));
       } else {
-        customError(res, 500, 'An error occured on the server');
+        next(err);
       }
     });
 };
 
-const updateUserData = (req, res) => {
+const updateUserData = (req, res, next) => {
   const id = req.user._id;
   const { name, about, avatar } = req.body;
   User.findByIdAndUpdate(
@@ -99,11 +95,7 @@ const updateUserInfo = (req, res) => {
   const { name, about } = req.body;
 
   if (!name || !about) {
-    return customError(
-      res,
-      400,
-      'Both name and about fields are required, please update',
-    );
+    return customError(res, 400, 'Both name and about fields are required');
   }
   return updateUserData(req, res);
 };

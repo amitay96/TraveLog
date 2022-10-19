@@ -6,14 +6,17 @@ const cors = require('cors');
 const { login, createUser } = require('./controllers/users');
 const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/errorHandler');
-const { requestLogger, errorLogger } = require('./middleware/logger');
-const { reqLimiter } = require('./middleware/limiter');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { reqLimiter } = require('./middlewares/reqLimiter');
 
 const { PORT = 3000 } = process.env;
+const { MONGODB_URI = 'mongodb://localhost:27017/aroundb' } = process.env;
+
+mongoose.connect(MONGODB_URI);
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/aroundb');
+// mongoose.connect('mongodb://localhost:27017/aroundb');
 
 app.use(cors());
 app.options('*', cors());
