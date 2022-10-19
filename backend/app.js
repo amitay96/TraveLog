@@ -7,6 +7,7 @@ const { login, createUser } = require('./controllers/users');
 const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middleware/logger');
+const { reqLimiter } = require('./middleware/limiter');
 
 const { PORT = 3000 } = process.env;
 
@@ -18,7 +19,7 @@ app.use(cors());
 app.options('*', cors());
 
 app.use(helmet());
-// app.use(limiter);
+app.use(reqLimiter);
 
 app.post('/signin', login);
 app.post('/signup', createUser); 
