@@ -7,3 +7,4 @@ const validateURL = (value, helpers) => {
   }
   return helpers.error('string.uri');
 };
+

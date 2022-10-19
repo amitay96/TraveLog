@@ -182,7 +182,7 @@ function App() {
   function handleAddPlaceSubmit(card) {
     setIsLoading(true);
     api
-      .createCard(card)
+      .createCard(card, token)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();

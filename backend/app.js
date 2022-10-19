@@ -3,9 +3,10 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const routes = require('./routes');
 const cors = require('cors');
+const { login, createUser } = require('./controllers/users');
 const { errors } = require('celebrate');
-const errorHandler = require('./middleware/errorHandler');
-const { login, createUser } = require('../controllers/users');
+const errorHandler = require('./middlewares/errorHandler');
+const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const { PORT = 3000 } = process.env;
 
@@ -17,6 +18,7 @@ app.use(cors());
 app.options('*', cors());
 
 app.use(helmet());
+// app.use(limiter);
 
 app.post('/signin', login);
 app.post('/signup', createUser); 
@@ -24,7 +26,11 @@ app.post('/signup', createUser);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(requestLogger);
+
 app.use(routes);
+
+app.use(errorLogger);
 
 app.use(errors());
 app.use(errorHandler);

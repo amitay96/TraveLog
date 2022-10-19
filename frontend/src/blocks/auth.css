@@ -6,7 +6,7 @@
     max-width: 358px;
     margin: 0 auto;
     height: calc(100vh - 300px);
-    padding-top: 20px;
+    padding: 20px 0;
 }
 
 .auth-form__title {
