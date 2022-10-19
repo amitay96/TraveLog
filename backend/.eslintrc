@@ -2,8 +2,17 @@
   "extends": "airbnb-base",
   "rules": {
     "no-underscore-dangle": [
-      "off", {
-        "allow": [ "id" ]
+      "off",
+      {
+        "allow": [
+          "id"
+        ]
+      }
+    ],
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "next"
       }
     ]
   }

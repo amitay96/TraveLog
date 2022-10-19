@@ -1,0 +1,19 @@
+.popup__container_type_tooltip {
+    gap: 32px;
+    text-align: center;
+    padding: 60px 36px;
+}
+
+.tooltip__image {
+    width: 120px;
+    margin: 0 auto;
+}
+
+.tooltip__text {
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 30px;
+    padding: 0;
+    margin: 0;
+    max-width: 358px;
+}
