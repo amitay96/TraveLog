@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken');
-const { customError } = require('../utils/errors');
-
+const UnauthorizedError = require('../errors/UnauthorizedError');
+require('dotenv').config();
 const { JWT_SECRET } = process.env;
-
+// console.log(process.env.JWT_SECRET);
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return next(customError(res, 401, 'Authorization required'));
+    return next(new UnauthorizedError('Authorization required'));
   }
 
   const token = authorization.replace('Bearer ', '');
@@ -15,7 +15,7 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return next(customError(res, 401, 'Authorization required'));
+    return next(new UnauthorizedError('Authorization required'));
   }
   req.user = payload;
   return next();

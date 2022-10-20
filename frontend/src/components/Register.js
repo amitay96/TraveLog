@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "../utils/hooks/useForm";
 
 const Register = ({ handleRegister, isLoading }) => {
-  const { values, handleChange } = useForm({});
+  const { values, handleChange } = useForm({ email: '', password: '' });
 
   const handleSubmit = (e) => {
     e.preventDefault();

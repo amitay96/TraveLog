@@ -1,23 +1,29 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { customError } = require('../utils/errors');
-
+// const { customError } = require('../utils/errors');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const BadRequestError = require('../errors/BadRequestError');
+const ConflictError = require('../errors/ConflictError');
+require('dotenv').config();
 const { JWT_SECRET } = process.env;
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
+  
   return User.findUserByCredentials(email, password)
   .then((user) => {
+    console.log(user._id);
     const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
       expiresIn: '7d',
     });
     res.send({ data: user.toJSON(), token });
   })
-  .catch((err) => {
-    next(customError(res, 401, "Email or Password incorrect"));
+  .catch(() => {
+    next(new UnauthorizedError("Email or Password incorrect"));
   });
 };
+
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send({ data: users }))
@@ -51,7 +57,7 @@ const createUser = (req, res, next) => {
   User.findOne({ email })
     .then(user => {
       if (user) {
-        throw customError(res, 409, 'Email already exists');
+        throw new ConflictError('Email already exists');
       }
       return bcrypt.hash(password, 10);
     })
@@ -59,7 +65,7 @@ const createUser = (req, res, next) => {
     .then(user => res.status(201).send({ data: user }))
     .catch(err => {
       if (err.name === 'ValidationError') {
-        next(customError(res, 400, 'Email already exists'));
+        next(new BadRequestError(err.message));
       } else {
         next(err);
       }

@@ -223,7 +223,8 @@ function App() {
           setLoggedIn(true);
           setUserData({ email });
           localStorage.setItem("jwt", res.token);
-          history.push("/react-around-auth");
+          setToken(res.token);
+          history.push("/");
         }
       })
       .catch((err) => {

@@ -16,21 +16,17 @@ mongoose.connect(MONGODB_URI);
 
 const app = express();
 
-// mongoose.connect('mongodb://localhost:27017/aroundb');
-
 app.use(cors());
 app.options('*', cors());
-
 app.use(helmet());
 app.use(reqLimiter);
 
-app.post('/signin', login);
-app.post('/signup', createUser); 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(requestLogger);
+
+app.post('/signin', login);
+app.post('/signup', createUser); 
 
 app.use(routes);
 
