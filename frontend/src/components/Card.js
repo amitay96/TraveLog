@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-const Card = (props) => {
+export default function Card(props) {
   const currentUser = useContext(CurrentUserContext);
   const isOwn = props.card.owner === currentUser._id;
-
-  const isLiked = props.card.likes.some((user) => user._id === currentUser._id);
+  const isLiked = props.card.likes.some(user => user === currentUser._id);
 
   const cardLikeButtonClassName = `card__like-button ${
     isLiked && "card__like-button_active"
@@ -51,6 +50,6 @@ const Card = (props) => {
       </div>
     </li>
   );
-};
+}
 
-export default Card;
+// export default Card;

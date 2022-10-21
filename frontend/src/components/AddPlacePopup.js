@@ -8,7 +8,7 @@ const AddPlacePopup = ({ isOpen, onClose, onAddPlaceSubmit, isLoading }) => {
   function handleSubmit(e) {
     e.preventDefault();
     const { name, link } = values;
-    onAddPlaceSubmit({ name, link });
+    onAddPlaceSubmit({ link, name });
   }
 
   React.useEffect(() => {

@@ -1,16 +1,15 @@
 const Card = require('../models/card');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 const BadRequestError = require('../errors/BadRequestError');
-const ConflictError = require('../errors/ConflictError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
-    .catch(() => customError(res, 500, 'An error occured'));
+    .then((cards) => res.status(200).send({ data: cards }))
+    .catch(next);
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link} = req.body;
   const { _id } = req.user;
   Card.create({
@@ -18,67 +17,64 @@ const createCard = (req, res) => {
     link,
     owner: _id,
   })
-  .then((card) => {
-      if (!card) {
-        throw new BadRequestError('Bad request');
-      }
-      console.log(req.body);
-      res.status(201).send({ data: card });
-    })
-    .catch(next);
-};
-
-const deleteCard = (req, res) => {
-  const { id } = req.params;
-
-  Card.findByIdAndRemove(id)
-    .orFail(() => {
-      const error = new Error('No card found for the specified id');
-      error.statusCode = 404;
-      throw error;
-    })
-    .then((card) => res.send({ message: 'Card removed successfully', data: card }))
+  .then((card) => res.status(201).send(card))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        customError(res, 400, 'Invalid card id');
-      } else if (err.statusCode === 404) {
-        customError(res, 404, err.message);
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError(err.message));
       } else {
-        customError(res, 500, 'An error occured on the server');
+        next(err);
       }
     });
 };
 
-const updateLike = (req, res, method) => {
+const deleteCard = (req, res, next) => {
   const { id } = req.params;
+  Card.findById(id)
+  .orFail(() => {
+    throw new NotFoundError('Card not found');
+  })
+  .then((card) => {
+      if (card.owner.toString() !== req.user._id) {
+        next(new ForbiddenError('You are not authorized to delete this card'));
+      } else {
+        Card.findByIdAndRemove(id).then((card) =>
+        res.status(200).send({ message: 'Card removed successfully', data: card })
+        );
+      }
+    })
+    .catch(next);
+};
 
+const updateLike = (req, res, next, method) => {
+  const { id } = req.params;
+  
   Card.findByIdAndUpdate(
     id,
     { [method]: { likes: req.user._id } },
     { new: true },
   )
     .orFail(() => {
-      const error = new Error('No card found for the specified id');
-      error.statusCode = 404;
-      throw error;
+      throw new NotFoundError('No card found with this Id');
     })
     .then((card) => {
-      res.send({ data: card });
+      if (card) {
+        res.status(200).send({ data: card });
+      } else {
+        next(new NotFoundError('No card found with this Id'));
+      }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        customError(res, 400, 'Invalid card id');
-      } else if (err.statusCode === 404) {
-        customError(res, 404, err.message);
+        next(new BadRequestError(err.message));
       } else {
-        customError(res, 500, 'An error occured');
+        next(err);
       }
     });
 };
 
-const likeCard = (req, res) => updateLike(req, res, '$addToSet');
+const likeCard = (req, res, next) => updateLike(req, res, next, '$addToSet');
 
-const dislikeCard = (req, res) => updateLike(req, res, '$pull');
+const dislikeCard = (req, res, next) => updateLike(req, res, next, '$pull');
 
 module.exports = {
   getCards,

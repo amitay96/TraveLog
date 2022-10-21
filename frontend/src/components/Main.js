@@ -53,7 +53,7 @@ const Main = ({
               />
             );
           })}
-        </ul>
+        </ul> 
       </section>
     </main>
   );

@@ -47,10 +47,37 @@ function App() {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const history = useHistory();
-
+  
   const [isLoading, setIsLoading] = useState(false);
-
+  
   //----------------Hooks----------------
+  useEffect(() => {
+    if (token) {
+      setIsLoading(true);
+      auth
+      .checkToken(token)
+      .then((res) => {
+        if (res._id) {
+            setLoggedIn(true);
+            setUserData({ email: res.email });
+            setCurrentUser(res);
+            history.push("/");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          history.push("/signin");
+        })
+        .finally(() => setIsLoading(false));
+        api
+          .getInitialCards()
+          .then(res => {
+            setCards(res.data);
+          })
+          .catch((err) => console.log(err));
+    }
+  }, [token, loggedIn]);
+
   useEffect(() => {
     if (token) {
       loggedIn &&
@@ -75,26 +102,6 @@ function App() {
     }
   }, [token]);
 
-  // useEffect(() => {
-  //   if (token) {
-  //     // console.log(token);
-  //     setIsLoading(true);
-  //     auth
-  //     .checkToken(token)
-  //     .then((res) => {
-  //       if (res.data._id) {
-  //           setLoggedIn(true);
-  //           setUserData({ email: res.data.email });
-  //           history.push("/");
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //         history.push("/signin");
-  //       })
-  //       .finally(() => setIsLoading(false));
-  //   }
-  // }, []);
 
   //----------------Event Handlers----------------
   const handleEditAvatarClick = () => {
@@ -132,14 +139,13 @@ function App() {
   };
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((user) => user._id === currentUser._id);
-
+    const isLiked = card.likes.some(user => user === currentUser._id);
     api
-      .toggleLike(card._id, isLiked, token)
+      .toggleLike(card._id, isLiked)
       .then((newCard) => {
-        setCards((cards) =>
-          cards.map((currentCard) =>
-            currentCard._id === card._id ? newCard : currentCard
+        setCards((state) =>
+          state.map((currentCard) =>
+            currentCard._id === card._id ? newCard.data : currentCard
           )
         );
       })
@@ -188,10 +194,10 @@ function App() {
 
   function handleAddPlaceSubmit(card) {
     setIsLoading(true);
-    console.log(card);
     api
-      .createCard(card)
-      .then((newCard) => {
+    .createCard(card)
+    .then((newCard) => {
+        console.log(newCard);
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
