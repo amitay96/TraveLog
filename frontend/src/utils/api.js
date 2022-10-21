@@ -16,7 +16,7 @@ class Api {
     return this._request(`${this._baseUrl}/cards`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        authorization: `Bearer ${token}`
       },
     });
   }
@@ -25,7 +25,7 @@ class Api {
     return this._request(`${this._baseUrl}/users/me`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        authorization: `Bearer ${token}`
       },
     });
   }
@@ -34,7 +34,7 @@ class Api {
     return this._request(`${this._baseUrl}/users/me`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        authorization: `Bearer ${token}`
       },
       method: "PATCH",
       body: JSON.stringify({
@@ -48,7 +48,7 @@ class Api {
     return this._request(`${this._baseUrl}/users/me/avatar`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        authorization: `Bearer ${token}`
       },
       method: "PATCH",
       body: JSON.stringify({
@@ -61,7 +61,7 @@ class Api {
     return this._request(`${this._baseUrl}/cards`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        authorization: `Bearer ${token}`
       },
       method: "POST",
       body: JSON.stringify(data),
@@ -72,7 +72,7 @@ class Api {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        authorization: `Bearer ${token}`
       },
       method: "DELETE",
     });
@@ -84,7 +84,7 @@ class Api {
     return this._request(`${this._baseUrl}/cards/likes/${cardId}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        authorization: `Bearer ${token}`
       },
       method: method,
     });

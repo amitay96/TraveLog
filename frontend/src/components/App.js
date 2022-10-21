@@ -49,35 +49,39 @@ function App() {
   //----------------Hooks----------------
   useEffect(() => {
     if (token) {
-      api
-        .getUserInfo(token)
-        .then(user => {
-          setCurrentUser(user);
-        })
-        .catch((err) => console.log(err));
+      loggedIn &&
+        api
+          .getUserInfo(token)
+          .then(user => {
+            console.log(user);
+            setCurrentUser(user);
+          })
+          .catch((err) => console.log(err));
     }
   }, [token]);
 
   useEffect(() => {
     if (token) {
-      api
-        .getInitialCards(token)
-        .then(res => {
-          setCards(res);
-        })
-        .catch((err) => console.log(err));
+      loggedIn &&
+        api
+          .getInitialCards(token)
+          .then(res => {
+            setCards(res);
+          })
+          .catch((err) => console.log(err));
     }
   }, [token]);
 
   useEffect(() => {
     if (token) {
+      // console.log(token);
       setIsLoading(true);
       auth
-        .checkToken(token)
-        .then((res) => {
-          if (res._id) {
+      .checkToken(token)
+      .then((res) => {
+        if (res.data._id) {
             setLoggedIn(true);
-            setUserData({ email: res.email });
+            setUserData({ email: res.data.email });
             history.push("/");
           }
         })
@@ -221,7 +225,7 @@ function App() {
       .then((res) => {
         if (res.token) {
           setLoggedIn(true);
-          setUserData({ email });
+          setUserData({ email: res.email });
           localStorage.setItem("jwt", res.token);
           setToken(res.token);
           history.push("/");
@@ -238,6 +242,7 @@ function App() {
   function handleSignout() {
     setLoggedIn(false);
     localStorage.removeItem("jwt");
+    setToken('');
     history.push("/signin");
   }
 

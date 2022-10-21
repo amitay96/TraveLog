@@ -8,6 +8,7 @@ const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { reqLimiter } = require('./middlewares/reqLimiter');
+require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
 const { MONGODB_URI = 'mongodb://localhost:27017/aroundb' } = process.env;

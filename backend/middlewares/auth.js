@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 require('dotenv').config();
 const { JWT_SECRET } = process.env;
-// console.log(process.env.JWT_SECRET);
+
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
@@ -17,7 +17,7 @@ const auth = (req, res, next) => {
   } catch (err) {
     return next(new UnauthorizedError('Authorization required'));
   }
-  req.user = payload;
+  req.user._id = payload;
   return next();
 };
 

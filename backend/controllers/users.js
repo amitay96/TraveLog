@@ -1,27 +1,26 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-// const { customError } = require('../utils/errors');
+require('dotenv').config();
+
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
-require('dotenv').config();
+const NotFoundError = require('../errors/NotFoundError');
 const { JWT_SECRET } = process.env;
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  
   return User.findUserByCredentials(email, password)
   .then((user) => {
-    console.log(user._id);
-    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-      expiresIn: '7d',
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: '7d',
+      });
+      res.send({ data: user.toJSON(), token });
+    })
+    .catch(() => {
+      next(new UnauthorizedError('Incorrect email or password'));
     });
-    res.send({ data: user.toJSON(), token });
-  })
-  .catch(() => {
-    next(new UnauthorizedError("Email or Password incorrect"));
-  });
 };
 
 const getUsers = (req, res) => {
@@ -30,26 +29,31 @@ const getUsers = (req, res) => {
     .catch(() => customError(res, 500, 'An error occured'));
 };
 
-const getUser = (req, res) => {
-  const { id } = req.params;
-  User.findById(id)
+const processUserWithId = (req, res, action, next) =>
+  action
     .orFail(() => {
-      const error = new Error('User Not Found');
-      error.statusCode = 404;
-      throw error;
+      throw new NotFoundError('No user found with this Id');
     })
     .then((user) => {
-      res.status(200).send({ data: user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        customError(res, 400, 'Invalid user id');
-      } else if (err.statusCode === 404) {
-        customError(res, 404, err.message);
+        next(new BadRequestError(err.message));
+      } else if (err.name === 'ValidationError') {
+        next(new BadRequestError(err.message));
       } else {
-        customError(res, 500, 'An error occured on the server');
+        next(err);
       }
     });
+
+const getCurrentUser = (req, res, next) => {
+  console.log(req.user._id);
+  processUserWithId(req, res, User.findById(req.user._id), next);
+};
+
+const getUserbyId = (req, res, next) => {
+  processUserWithId(req, res, User.findById(req.params.id), next);
 };
 
 const createUser = (req, res, next) => {
@@ -73,35 +77,25 @@ const createUser = (req, res, next) => {
 };
 
 const updateUserData = (req, res, next) => {
-  const id = req.user._id;
+  const _id = req.user;
   const { name, about, avatar } = req.body;
-  User.findByIdAndUpdate(
-    id,
-    { name, about, avatar },
-    { new: true, runValidators: true },
-  )
-    .orFail(() => {
-      const error = new Error('Invalid user id');
-      error.statusCode = 404;
-      throw error;
-    })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        customError(res, 400, 'Invalid user id');
-      } else if (err.statusCode === 404) {
-        customError(res, 404, err.message);
-      } else {
-        customError(res, 500, 'An error occured on the server');
-      }
-    });
+  processUserWithId(
+    req,
+    res,
+    User.findByIdAndUpdate(
+      _id,
+      { name, about },
+      { new: true, runValidators: true }
+    ),
+    next
+  );
 };
 
 const updateUserInfo = (req, res) => {
   const { name, about } = req.body;
 
   if (!name || !about) {
-    return customError(res, 400, 'Both name and about fields are required');
+    return new BadRequestError('Both name and about fields are required');
   }
   return updateUserData(req, res);
 };
@@ -110,7 +104,7 @@ const updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
 
   if (!avatar) {
-    return customError(res, 400, 'Avatar new URL link is required');
+    return new BadRequestError('Avatar new URL link is required');
   }
   return updateUserData(req, res);
 };
@@ -118,7 +112,8 @@ const updateUserAvatar = (req, res) => {
 module.exports = {
   login,
   getUsers,
-  getUser,
+  getUserbyId,
+  getCurrentUser,
   createUser,
   updateUserInfo,
   updateUserAvatar,
