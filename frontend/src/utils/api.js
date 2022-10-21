@@ -15,29 +15,20 @@ class Api {
   
   getUserInfo() {
     return this._request(`${this._baseUrl}/users/me`, {
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
+      headers: this._headers,
     });
   }
   
-  getInitialCards(token) {
+  getInitialCards() {
     return this._request(`${this._baseUrl}/cards`, {
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
+      headers: this._headers,
     });
   }
 
 
-  setUserInfo({ name, about }, token) {
+  setUserInfo({ name, about }) {
     return this._request(`${this._baseUrl}/users/me`, {
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
+      headers: this._headers,
       method: "PATCH",
       body: JSON.stringify({
         name: name,
@@ -46,12 +37,9 @@ class Api {
     });
   }
 
-  setUserAvatar(avatar, token) {
+  setUserAvatar(avatar) {
     return this._request(`${this._baseUrl}/users/me/avatar`, {
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
+      headers: this._headers,
       method: "PATCH",
       body: JSON.stringify({
         avatar: avatar,
@@ -59,35 +47,26 @@ class Api {
     });
   }
 
-  createCard(data, token) {
+  createCard(data) {
     return this._request(`${this._baseUrl}/cards`, {
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
+      headers: this._headers,
       method: "POST",
       body: JSON.stringify(data),
     });
   }
 
-  deleteCard(cardId, token) {
+  deleteCard(cardId) {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
+      headers: this._headers,
       method: "DELETE",
     });
   }
 
-  toggleLike(cardId, isLiked, token) {
+  toggleLike(cardId, isLiked) {
     let method;
     isLiked ? (method = "DELETE") : (method = "PUT");
     return this._request(`${this._baseUrl}/cards/likes/${cardId}`, {
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
+      headers: this._headers,
       method: method,
     });
   }
@@ -97,6 +76,7 @@ const api = new Api({
   baseUrl: "http://localhost:3000",
   headers: {
     "Content-Type": "application/json",
+    authorization: `Bearer ${localStorage.getItem("jwt")}`,
   },
 });
 

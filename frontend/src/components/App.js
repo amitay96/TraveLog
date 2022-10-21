@@ -53,29 +53,27 @@ function App() {
   //----------------Hooks----------------
   useEffect(() => {
     if (token) {
-      // console.log(token);
       loggedIn &&
         api
           .getUserInfo()
           .then(user => {
-            // console.log(user);
             setCurrentUser(user);
           })
           .catch((err) => console.log(err));
     }
-  }, [loggedIn]);
+  }, [token]);
 
-  // useEffect(() => {
-  //   if (token) {
-  //     loggedIn &&
-  //       api
-  //         .getInitialCards()
-  //         .then(res => {
-  //           setCards(res);
-  //         })
-  //         .catch((err) => console.log(err));
-  //   }
-  // }, [token]);
+  useEffect(() => {
+    if (token) {
+      loggedIn &&
+        api
+          .getInitialCards()
+          .then(res => {
+            setCards(res.data);
+          })
+          .catch((err) => console.log(err));
+    }
+  }, [token]);
 
   // useEffect(() => {
   //   if (token) {
@@ -190,8 +188,9 @@ function App() {
 
   function handleAddPlaceSubmit(card) {
     setIsLoading(true);
+    console.log(card);
     api
-      .createCard(card, token)
+      .createCard(card)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();

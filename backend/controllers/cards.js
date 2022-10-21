@@ -1,5 +1,8 @@
 const Card = require('../models/card');
-const { customError } = require('../utils/errors');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const BadRequestError = require('../errors/BadRequestError');
+const ConflictError = require('../errors/ConflictError');
+const NotFoundError = require('../errors/NotFoundError');
 
 const getCards = (req, res) => {
   Card.find({})
@@ -8,26 +11,21 @@ const getCards = (req, res) => {
 };
 
 const createCard = (req, res) => {
-  const { name, link, likes } = req.body;
+  const { name, link} = req.body;
   const { _id } = req.user;
   Card.create({
     name,
     link,
-    likes,
     owner: _id,
   })
-    .then((card) => res.status(201).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({
-          message: `${Object.values(err.errors)
-            .map((error) => error.message)
-            .join(', ')}`,
-        });
-      } else {
-        customError(res, 500, 'An error occured on the server');
+  .then((card) => {
+      if (!card) {
+        throw new BadRequestError('Bad request');
       }
-    });
+      console.log(req.body);
+      res.status(201).send({ data: card });
+    })
+    .catch(next);
 };
 
 const deleteCard = (req, res) => {

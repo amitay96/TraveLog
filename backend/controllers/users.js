@@ -48,7 +48,6 @@ const processUserWithId = (req, res, action, next) =>
     });
 
 const getCurrentUser = (req, res, next) => {
-  console.log(req.user);
   processUserWithId(req, res, User.findById(req.user._id), next);
 };
 
@@ -84,7 +83,7 @@ const updateUserData = (req, res, next) => {
     res,
     User.findByIdAndUpdate(
       _id,
-      { name, about },
+      { name, about, avatar },
       { new: true, runValidators: true }
     ),
     next

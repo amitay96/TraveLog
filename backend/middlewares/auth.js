@@ -13,8 +13,6 @@ const auth = (req, res, next) => {
   const token = authorization.replace('Bearer ', '');
   let payload;
   try {
-    console.log('secret', JWT_SECRET);
-    console.log('token', token);
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     return next(new UnauthorizedError('Authorization required'));
