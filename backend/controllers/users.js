@@ -26,7 +26,7 @@ const login = (req, res, next) => {
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send({ data: users }))
-    .catch(() => customError(res, 500, 'An error occured'));
+    .catch(() => console.log( 500,'An error occured'));
 };
 
 const processUserWithId = (req, res, action, next) =>
@@ -48,7 +48,7 @@ const processUserWithId = (req, res, action, next) =>
     });
 
 const getCurrentUser = (req, res, next) => {
-  console.log(req.user._id);
+  console.log(req.user);
   processUserWithId(req, res, User.findById(req.user._id), next);
 };
 

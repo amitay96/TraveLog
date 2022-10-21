@@ -33,7 +33,11 @@ function App() {
     link: "",
   });
 
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState({
+    name: "Loading...",
+    about: "Loading..."
+  });
+
   const [userData, setUserData] = useState({
     email: "",
   });
@@ -49,49 +53,50 @@ function App() {
   //----------------Hooks----------------
   useEffect(() => {
     if (token) {
+      // console.log(token);
       loggedIn &&
         api
-          .getUserInfo(token)
+          .getUserInfo()
           .then(user => {
-            console.log(user);
+            // console.log(user);
             setCurrentUser(user);
           })
           .catch((err) => console.log(err));
     }
-  }, [token]);
+  }, [loggedIn]);
 
-  useEffect(() => {
-    if (token) {
-      loggedIn &&
-        api
-          .getInitialCards(token)
-          .then(res => {
-            setCards(res);
-          })
-          .catch((err) => console.log(err));
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   if (token) {
+  //     loggedIn &&
+  //       api
+  //         .getInitialCards()
+  //         .then(res => {
+  //           setCards(res);
+  //         })
+  //         .catch((err) => console.log(err));
+  //   }
+  // }, [token]);
 
-  useEffect(() => {
-    if (token) {
-      // console.log(token);
-      setIsLoading(true);
-      auth
-      .checkToken(token)
-      .then((res) => {
-        if (res.data._id) {
-            setLoggedIn(true);
-            setUserData({ email: res.data.email });
-            history.push("/");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          history.push("/signin");
-        })
-        .finally(() => setIsLoading(false));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (token) {
+  //     // console.log(token);
+  //     setIsLoading(true);
+  //     auth
+  //     .checkToken(token)
+  //     .then((res) => {
+  //       if (res.data._id) {
+  //           setLoggedIn(true);
+  //           setUserData({ email: res.data.email });
+  //           history.push("/");
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //         history.push("/signin");
+  //       })
+  //       .finally(() => setIsLoading(false));
+  //   }
+  // }, []);
 
   //----------------Event Handlers----------------
   const handleEditAvatarClick = () => {
@@ -225,9 +230,10 @@ function App() {
       .then((res) => {
         if (res.token) {
           setLoggedIn(true);
-          setUserData({ email: res.email });
           localStorage.setItem("jwt", res.token);
           setToken(res.token);
+          setUserData({ email: res.data.email });
+          setCurrentUser(res.data);
           history.push("/");
         }
       })
