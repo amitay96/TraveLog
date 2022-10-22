@@ -1,4 +1,9 @@
-const BASE_URL = "http://localhost:3000";
+let node_env = "production";
+
+let BASE_URL =
+  node_env === "production"
+    ? "https://api.solomon.students.nomoredomainssbs.ru"
+    : "http://localhost:3000";
 
 const customFetch = (url, headers) => {
   return fetch(url, headers).then(res =>

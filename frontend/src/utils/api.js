@@ -71,9 +71,15 @@ class Api {
     });
   }
 }
+let node_env = "production";
+
+let base_Url =
+  node_env === "production"
+    ? "https://api.amitay.students.nomoredomainssbs.ru"
+    : "http://localhost:3000";
 
 const api = new Api({
-  baseUrl: "http://localhost:3000",
+  baseUrl: base_Url,
   headers: {
     "Content-Type": "application/json",
     authorization: `Bearer ${localStorage.getItem("jwt")}`,
