@@ -40,6 +40,5 @@
   },
   "devDependencies": {
     "gh-pages": "^4.0.0"
-  },
-  "homepage": "https://amitay96.github.io/around-react"
+  }
 }
