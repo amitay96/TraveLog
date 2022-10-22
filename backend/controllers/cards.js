@@ -10,14 +10,14 @@ const getCards = (req, res, next) => {
 };
 
 const createCard = (req, res, next) => {
-  const { name, link} = req.body;
+  const { name, link } = req.body;
   const { _id } = req.user;
   Card.create({
     name,
     link,
     owner: _id,
   })
-  .then((card) => res.status(201).send(card))
+    .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(err.message));
@@ -30,16 +30,14 @@ const createCard = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   const { id } = req.params;
   Card.findById(id)
-  .orFail(() => {
-    throw new NotFoundError('Card not found');
-  })
-  .then((card) => {
+    .orFail(() => {
+      throw new NotFoundError('Card not found');
+    })
+    .then((card) => {
       if (card.owner.toString() !== req.user._id) {
         next(new ForbiddenError('You are not authorized to delete this card'));
       } else {
-        Card.findByIdAndRemove(id).then((card) =>
-        res.status(200).send({ message: 'Card removed successfully', data: card })
-        );
+        Card.findByIdAndRemove(id).then((deletedCard) => res.status(200).send({ message: 'Card removed successfully', data: deletedCard }));
       }
     })
     .catch(next);
@@ -47,7 +45,7 @@ const deleteCard = (req, res, next) => {
 
 const updateLike = (req, res, next, method) => {
   const { id } = req.params;
-  
+
   Card.findByIdAndUpdate(
     id,
     { [method]: { likes: req.user._id } },

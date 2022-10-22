@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const routes = require('./routes');
 const cors = require('cors');
-const { login, createUser } = require('./controllers/users');
 const { errors } = require('celebrate');
+const routes = require('./routes');
+const { login, createUser } = require('./controllers/users');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { reqLimiter } = require('./middlewares/reqLimiter');
@@ -28,7 +28,7 @@ app.options('*', cors());
 app.use(requestLogger);
 
 app.post('/signin', login);
-app.post('/signup', createUser); 
+app.post('/signup', validateAuth, createUser);
 
 app.use(routes);
 

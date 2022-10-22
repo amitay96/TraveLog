@@ -60,7 +60,6 @@ const validateId = celebrate({
   }),
 });
 
-
 module.exports = {
   validateAuth,
   validateUser,
