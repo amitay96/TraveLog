@@ -7,8 +7,8 @@ const {
   updateUserAvatar,
 } = require('../controllers/users');
 const {
-  validateId,
   validateProfile,
+  validateId,
   validateAvatar,
 } = require('../middlewares/validation');
 

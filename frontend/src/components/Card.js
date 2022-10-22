@@ -6,7 +6,7 @@ const Card = (props) => {
   const isOwn = props.card.owner === currentUser._id;
   
   const isLiked = props.card.likes.some(user => user === currentUser._id);
-  // const isLiked=true;
+
   const cardLikeButtonClassName = `card__like-button ${
     isLiked && "card__like-button_active"
   }`;

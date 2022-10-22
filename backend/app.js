@@ -8,6 +8,7 @@ const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { reqLimiter } = require('./middlewares/reqLimiter');
+const { validateAuth } = require('./middlewares/validation');
 require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
@@ -17,13 +18,13 @@ mongoose.connect(MONGODB_URI);
 
 const app = express();
 
-app.use(cors());
-app.options('*', cors());
 app.use(helmet());
 app.use(reqLimiter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.options('*', cors());
 app.use(requestLogger);
 
 app.post('/signin', login);
