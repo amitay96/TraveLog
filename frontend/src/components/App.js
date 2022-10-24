@@ -35,29 +35,28 @@ function App() {
 
   const [currentUser, setCurrentUser] = useState({
     name: "Loading...",
-    about: "Loading..."
+    about: "Loading...",
   });
 
   const [userData, setUserData] = useState({
     email: "",
   });
 
-  
   const [token, setToken] = useState(localStorage.getItem("jwt"));
 
   const [loggedIn, setLoggedIn] = useState(false);
   const history = useHistory();
-  
+
   const [isLoading, setIsLoading] = useState(false);
-  
+
   //----------------Hooks----------------
   useEffect(() => {
     if (token) {
       setIsLoading(true);
       auth
-      .checkToken(token)
-      .then((res) => {
-        if (res._id) {
+        .checkToken(token)
+        .then((res) => {
+          if (res._id) {
             setLoggedIn(true);
             setUserData({ email: res.email });
             setCurrentUser(res);
@@ -69,39 +68,31 @@ function App() {
           history.push("/signin");
         })
         .finally(() => setIsLoading(false));
-        api
-          .getInitialCards()
-          .then(res => {
-            setCards(res.data);
-          })
-          .catch((err) => console.log(err));
     }
-  }, [token, loggedIn]);
+  }, [history]);
+
+  // useEffect(() => {
+  //   if (token) {
+  //     loggedIn &&
+  //       api
+  //         .getUserInfo()
+  //         .then((user) => {
+  //           setCurrentUser(user);
+  //         })
+  //         .catch((err) => console.log(err));
+  //   }
+  // }, [token]);
 
   useEffect(() => {
     if (token) {
-      loggedIn &&
-        api
-          .getUserInfo()
-          .then(user => {
-            setCurrentUser(user);
-          })
-          .catch((err) => console.log(err));
+      api
+        .getInitialCards()
+        .then((res) => {
+          setCards(res.data);
+        })
+        .catch((err) => console.log(err));
     }
-  }, [token]);
-
-  useEffect(() => {
-    if (token) {
-      loggedIn &&
-        api
-          .getInitialCards()
-          .then(res => {
-            setCards(res.data);
-          })
-          .catch((err) => console.log(err));
-    }
-  }, [token]);
-
+  }, [loggedIn]);
 
   //----------------Event Handlers----------------
   const handleEditAvatarClick = () => {
@@ -139,7 +130,7 @@ function App() {
   };
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(user => user === currentUser._id);
+    const isLiked = card.likes.some((user) => user === currentUser._id);
     api
       .toggleLike(card._id, isLiked)
       .then((newCard) => {
@@ -195,9 +186,8 @@ function App() {
   function handleAddPlaceSubmit(card) {
     setIsLoading(true);
     api
-    .createCard(card)
-    .then((newCard) => {
-        console.log(newCard);
+      .createCard(card)
+      .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
@@ -234,8 +224,8 @@ function App() {
       .login(email, password)
       .then((res) => {
         if (res.token) {
-          setLoggedIn(true);
           localStorage.setItem("jwt", res.token);
+          setLoggedIn(true);
           setToken(res.token);
           setUserData({ email: res.data.email });
           setCurrentUser(res.data);
@@ -253,7 +243,7 @@ function App() {
   function handleSignout() {
     setLoggedIn(false);
     localStorage.removeItem("jwt");
-    setToken('');
+    setToken("");
     history.push("/signin");
   }
 
@@ -266,7 +256,7 @@ function App() {
           handleSignout={handleSignout}
         />
         <Switch>
-          <ProtectedRoute exact path="/react-around-auth" loggedIn={loggedIn}>
+          <ProtectedRoute exact path="/" loggedIn={loggedIn}>
             <Main
               onEditProfileClick={handleEditProfileClick}
               onAddPlaceClick={handleAddPlaceClick}
@@ -287,11 +277,7 @@ function App() {
           </Route>
 
           <Route>
-            {loggedIn ? (
-              <Redirect to="/react-around-auth" />
-            ) : (
-              <Redirect to="/signin" />
-            )}
+            {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
           </Route>
         </Switch>
 

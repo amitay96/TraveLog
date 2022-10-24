@@ -1,12 +1,7 @@
-let node_env = "production";
-
-let BASE_URL =
-  node_env === "production"
-    ? "https://api.solomon.students.nomoredomainssbs.ru"
-    : "http://localhost:3000";
+let BASE_URL = "https://api.amitay.students.nomoredomainssbs.ru";
 
 const customFetch = (url, headers) => {
-  return fetch(url, headers).then(res =>
+  return fetch(url, headers).then((res) =>
     res.ok ? res.json() : Promise.reject(res.statusText)
   );
 };

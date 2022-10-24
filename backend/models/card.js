@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
+const mongoose = require("mongoose");
+const validator = require("validator");
 
 const cardSchema = new mongoose.Schema(
   {
@@ -19,11 +19,11 @@ const cardSchema = new mongoose.Schema(
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      ref: "user",
       required: [true, 'The "Owner" field must be filled in.'],
     },
     likes: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
       default: [],
     },
     createdAt: {
@@ -31,7 +31,7 @@ const cardSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { versionKey: false },
+  { versionKey: false }
 );
 
-module.exports = mongoose.model('card', cardSchema);
+module.exports = mongoose.model("card", cardSchema);
