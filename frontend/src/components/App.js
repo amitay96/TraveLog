@@ -49,51 +49,6 @@ function App() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  //----------------Hooks----------------
-  useEffect(() => {
-    if (token) {
-      setIsLoading(true);
-      auth
-        .checkToken(token)
-        .then((res) => {
-          if (res._id) {
-            setLoggedIn(true);
-            setUserData({ email: res.email });
-            setCurrentUser(res);
-            history.push("/");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          history.push("/signin");
-        })
-        .finally(() => setIsLoading(false));
-    }
-  }, [history]);
-
-  // useEffect(() => {
-  //   if (token) {
-  //     loggedIn &&
-  //       api
-  //         .getUserInfo()
-  //         .then((user) => {
-  //           setCurrentUser(user);
-  //         })
-  //         .catch((err) => console.log(err));
-  //   }
-  // }, [token]);
-
-  useEffect(() => {
-    if (token) {
-      api
-        .getInitialCards()
-        .then((res) => {
-          setCards(res.data);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [loggedIn]);
-
   //----------------Event Handlers----------------
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
@@ -246,6 +201,40 @@ function App() {
     setToken("");
     history.push("/signin");
   }
+
+  //----------------Hooks----------------
+
+  useEffect(() => {
+    if (token) {
+      api
+        .getInitialCards()
+        .then((res) => {
+          setCards(res.data);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [loggedIn]);
+
+  useEffect(() => {
+    if (token) {
+      setIsLoading(true);
+      auth
+        .checkToken(token)
+        .then((res) => {
+          if (res._id) {
+            setLoggedIn(true);
+            setUserData({ email: res.email });
+            setCurrentUser(res);
+            history.push("/");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          history.push("/signin");
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [history]);
 
   return (
     <div className="App">

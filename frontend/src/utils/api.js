@@ -70,9 +70,13 @@ class Api {
     });
   }
 }
+
 let node_env = "production";
 
-let base_url = "https://api.amitay.students.nomoredomainssbs.ru";
+let base_url =
+  node_env === "production"
+    ? "https://api.amitay.students.nomoredomainssbs.ru"
+    : "http://localhost:3000";
 
 const api = new Api({
   baseUrl: base_url,
