@@ -27,6 +27,12 @@ app.options("*", cors());
 app.use(reqLimiter);
 app.use(requestLogger);
 
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
+
 app.post("/signin", login);
 app.post("/signup", validateAuth, createUser);
 
