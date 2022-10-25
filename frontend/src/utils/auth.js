@@ -1,5 +1,4 @@
 let BASE_URL = "https://api.amitay.students.nomoredomainssbs.ru";
-// let BASE_URL = "http://localhost:3000";
 
 const customFetch = (url, headers) => {
   return fetch(url, headers).then((res) =>
