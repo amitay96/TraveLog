@@ -15,19 +15,28 @@ class Api {
 
   getUserInfo() {
     return this._request(`${this._baseUrl}/users/me`, {
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
     });
   }
 
   getInitialCards() {
     return this._request(`${this._baseUrl}/cards`, {
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
     });
   }
 
   setUserInfo({ name, about }) {
     return this._request(`${this._baseUrl}/users/me`, {
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
       method: "PATCH",
       body: JSON.stringify({
         name: name,
@@ -38,7 +47,10 @@ class Api {
 
   setUserAvatar(avatar) {
     return this._request(`${this._baseUrl}/users/me/avatar`, {
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
       method: "PATCH",
       body: JSON.stringify({
         avatar: avatar,
@@ -48,7 +60,10 @@ class Api {
 
   createCard(data) {
     return this._request(`${this._baseUrl}/cards`, {
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
       method: "POST",
       body: JSON.stringify(data),
     });
@@ -56,7 +71,10 @@ class Api {
 
   deleteCard(cardId) {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
       method: "DELETE",
     });
   }
@@ -65,7 +83,10 @@ class Api {
     let method;
     isLiked ? (method = "DELETE") : (method = "PUT");
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
       method: method,
     });
   }
@@ -82,7 +103,6 @@ const api = new Api({
   baseUrl: base_url,
   headers: {
     "Content-Type": "application/json",
-    authorization: `Bearer ${localStorage.getItem("jwt")}`,
   },
 });
 

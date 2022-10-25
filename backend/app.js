@@ -1,18 +1,18 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const helmet = require('helmet');
-const cors = require('cors');
-const { errors } = require('celebrate');
-const routes = require('./routes');
-const { login, createUser } = require('./controllers/users');
-const errorHandler = require('./middlewares/errorHandler');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { reqLimiter } = require('./middlewares/reqLimiter');
-const { validateAuth } = require('./middlewares/validation');
-require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+const helmet = require("helmet");
+const cors = require("cors");
+const { errors } = require("celebrate");
+const routes = require("./routes");
+const { login, createUser } = require("./controllers/users");
+const errorHandler = require("./middlewares/errorHandler");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
+const { reqLimiter } = require("./middlewares/reqLimiter");
+const { validateAuth } = require("./middlewares/validation");
+require("dotenv").config();
 
 const { PORT = 3000 } = process.env;
-const { MONGODB_URI = 'mongodb://localhost:27017/aroundb' } = process.env;
+const { MONGODB_URI = "mongodb://localhost:27017/aroundb" } = process.env;
 
 mongoose.connect(MONGODB_URI);
 
@@ -23,18 +23,18 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.options('*', cors());
+app.options("*", cors());
 app.use(reqLimiter);
 app.use(requestLogger);
 
-app.get('/crash-test', () => {
+app.get("/crash-test", () => {
   setTimeout(() => {
-    throw new Error('Server will crash now');
+    throw new Error("Server will crash now");
   }, 0);
 });
 
-app.post('/signin', validateAuth, login);
-app.post('/signup', validateAuth, createUser);
+app.post("/signin", validateAuth, login);
+app.post("/signup", validateAuth, createUser);
 
 app.use(routes);
 
