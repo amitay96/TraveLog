@@ -23,4 +23,5 @@ Optimized for the most popular screen resolutions.
 
 # Github Pages Link (React Version):
 
-- [Link to the github pages link](https://amitay96.github.io/around-react)
+- [Link to the github pages](https://amitay96.github.io/around-react)
+- [Link to the Vercel live site](https://trave-log-sepia.vercel.app)
