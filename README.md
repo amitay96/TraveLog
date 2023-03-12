@@ -6,8 +6,9 @@ This repository contains the full API of the "Around the U.S." project that feat
 - Frontend repo - [https://github.com/amitay96/react-around-auth]
 - Backend repo - [https://github.com/amitay96/around-express]
 
+Previously deployed to GCP, now on Vercel.
 
-- Fullstack live server App: [https://amitay.students.nomoredomainssbs.ru/]
+- Fullstack live server App: [https://trave-log-sepia.vercel.app/]
 - Api deployed to remote GCP server: [https://api.amitay.students.nomoredomainssbs.ru/]
 
 ## Primary project objectives:
